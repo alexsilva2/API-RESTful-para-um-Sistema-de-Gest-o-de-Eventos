@@ -37,7 +37,9 @@ npm ci
 npm start
 ```
 
-O servidor atende em `http://localhost:3000`. O arquivo `database.sqlite` é criado automaticamente na raiz após a sincronização dos modelos e preserva os dados entre execuções. O banco local e as dependências não são versionados.
+O servidor atende em `http://localhost:3000`. Ao abrir esse endereço no navegador, a API redireciona para `/events`, que exibe a lista de eventos em JSON. Quando não há eventos cadastrados, a resposta é `[]`.
+
+O arquivo `database.sqlite` é criado automaticamente na raiz após a sincronização dos modelos e preserva os dados entre execuções. O banco local e as dependências não são versionados.
 
 Para reiniciar automaticamente ao editar o código:
 

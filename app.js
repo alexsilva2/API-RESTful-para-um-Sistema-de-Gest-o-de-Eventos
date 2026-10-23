@@ -4,6 +4,11 @@ const eventRoutes = require('./routes/eventRoutes');
 const app = express();
 
 app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.redirect('/events');
+});
+
 app.use('/events', eventRoutes);
 
 app.use((req, res) => {
