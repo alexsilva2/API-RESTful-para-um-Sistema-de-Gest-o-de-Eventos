@@ -1,6 +1,5 @@
 {
   "info": {
-    "_postman_id": "e94f51ea-3f69-4fae-94d7-98f0acb5d311",
     "name": "Event Manager API - Testes de entrega",
     "description": "Cenarios manuais exigidos na atividade pratica: validacao Joi, criacao de evento, controle de vagas e listagem com contagem de inscricoes.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
