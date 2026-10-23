@@ -9,6 +9,7 @@ API para cadastro de eventos e gerenciamento de inscrições, com validação do
 - Inscrição de participantes com nome e email.
 - Bloqueio de novas inscrições quando o evento atinge sua capacidade.
 - Validação de requisições e respostas de erro em JSON.
+- Interface web responsiva para cadastrar eventos, inscrever participantes e acompanhar vagas.
 
 ## Tecnologias
 
@@ -19,6 +20,7 @@ API para cadastro de eventos e gerenciamento de inscrições, com validação do
 | Joi | Validação dos dados de entrada |
 | Sequelize | Mapeamento dos modelos e acesso ao banco |
 | SQLite | Persistência local dos dados |
+| HTML, CSS e JavaScript | Interface web integrada à API |
 
 ## Instalação e execução
 
@@ -37,7 +39,16 @@ npm ci
 npm start
 ```
 
-O servidor atende em `http://localhost:3000`. Ao abrir esse endereço no navegador, a API redireciona para `/events`, que exibe a lista de eventos em JSON. Quando não há eventos cadastrados, a resposta é `[]`.
+O servidor atende em `http://localhost:3000`. Abra esse endereço no navegador para acessar o painel de eventos. O endpoint `/events` continua disponível para consultar os dados em JSON.
+
+### Usar a interface
+
+1. Preencha o nome, a data, o horário e a capacidade no formulário **Novo evento**.
+2. Clique em **Criar evento** para salvar e exibir o evento na lista.
+3. Clique em **Inscrever participante** no evento desejado e informe nome e email.
+4. Acompanhe as inscrições e as vagas restantes nos cartões e no resumo do painel.
+
+Eventos sem vagas ficam identificados como **Lotado**, com o botão de inscrição desabilitado. O botão **Atualizar** consulta novamente os dados, incluindo alterações feitas por outros clientes. Datas e horários são apresentados no fuso local do dispositivo.
 
 O arquivo `database.sqlite` é criado automaticamente na raiz após a sincronização dos modelos e preserva os dados entre execuções. O banco local e as dependências não são versionados.
 
@@ -127,6 +138,9 @@ models/Registration.js    Modelo de inscrição
 models/index.js           Relacionamento entre os modelos
 middleware/validation.js  Validações Joi
 routes/eventRoutes.js     Rotas e regras de negócio
+public/index.html         Painel de eventos e formulários
+public/styles.css         Estilos e layout responsivo
+public/app.js             Integração da interface com a API
 docs/TESTES_MANUAIS.md    Roteiro de verificação dos endpoints
 ```
 

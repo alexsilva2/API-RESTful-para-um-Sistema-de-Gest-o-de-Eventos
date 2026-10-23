@@ -1,15 +1,13 @@
 const express = require('express');
+const path = require('node:path');
 const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.redirect('/events');
-});
-
 app.use('/events', eventRoutes);
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Rota não encontrada.' });

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#47349b">
+  <title>Event Manager | Gestão de eventos</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Event Manager, início"><span class="brand-mark" aria-hidden="true">e.</span>Event Manager</a>
+    <span class="header-label">Seu próximo encontro começa aqui</span>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">PAINEL DE EVENTOS</p><h1 id="page-title">Organize encontros.<br><span>Conecte pessoas.</span></h1></div>
+      <p>Crie seu evento, receba participantes e acompanhe cada vaga em um só lugar.</p>
+    </section>
+
+    <section class="stats" aria-label="Resumo dos eventos">
+      <div class="stat"><span>Eventos cadastrados</span><strong id="event-count">—</strong></div>
+      <div class="stat"><span>Inscrições realizadas</span><strong id="registration-count">—</strong></div>
+      <div class="stat"><span>Vagas disponíveis</span><strong id="available-count">—</strong></div>
+    </section>
+
+    <p id="page-message" class="message" role="status" aria-live="polite" hidden></p>
+
+    <div class="workspace">
+      <section class="panel create-panel" aria-labelledby="create-title">
+        <div class="section-label">VAMOS COMEÇAR</div>
+        <h2 id="create-title">Novo evento</h2>
+        <p class="muted">Preencha os detalhes e prepare o próximo encontro.</p>
+        <form id="event-form">
+          <fieldset id="event-fields">
+            <label for="title">Nome do evento</label>
+            <input id="title" name="title" type="text" placeholder="Ex.: Workshop de programação" required>
+
+            <label for="date">Data e horário</label>
+            <input id="date" name="date" type="datetime-local" required aria-describedby="date-hint">
+            <small id="date-hint">Horário local do seu dispositivo.</small>
+
+            <label for="capacity">Número de vagas</label>
+            <input id="capacity" name="capacity" type="number" min="1" max="9007199254740991" step="1" placeholder="Ex.: 30" required>
+
+            <button class="button primary full-width" id="create-button" type="submit">Criar evento <span aria-hidden="true">↗</span></button>
+          </fieldset>
+          <p id="event-message" class="message" role="status" aria-live="polite" hidden></p>
+        </form>
+        <div class="tip"><span aria-hidden="true">✦</span><p>As vagas são atualizadas a cada inscrição. Ao atingir o limite, o evento fica lotado.</p></div>
+      </section>
+
+      <section class="events-section" aria-labelledby="events-title">
+        <div class="section-heading"><div><div class="section-label">AGENDA</div><h2 id="events-title">Seus eventos</h2></div><button id="refresh-button" class="button secondary" type="button">Atualizar</button></div>
+        <p id="list-status" class="muted" role="status">Carregando eventos…</p>
+        <div id="empty-state" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">✦</span><h3>Um espaço para novos encontros</h3><p>Seu primeiro evento começa no formulário ao lado. Depois, convide os participantes a se inscrever.</p></div>
+        <div id="event-list" class="event-list" aria-label="Lista de eventos"></div>
+      </section>
+    </div>
+    <footer>Event Manager <span aria-hidden="true">·</span> Encontros bem organizados, do começo ao fim.</footer>
+  </main>
+
+  <template id="event-template">
+    <article class="event-card">
+      <div class="card-top"><div class="date-tile" aria-hidden="true"><span class="event-month"></span><strong class="event-day"></strong></div><div class="card-title"><span class="event-badge"></span><h3 class="event-title"></h3><time class="event-date"></time></div></div>
+      <div class="capacity-label"><span class="event-registrations"></span><strong class="event-remaining"></strong></div>
+      <progress class="capacity-progress"></progress>
+      <button class="button secondary register-button" type="button">Inscrever participante <span aria-hidden="true">↗</span></button>
+    </article>
+  </template>
+
+  <dialog id="registration-dialog" aria-labelledby="registration-title" aria-describedby="registration-event">
+    <div class="dialog-heading"><span class="section-label">NOVA INSCRIÇÃO</span><button id="close-dialog" class="close-button" type="button" aria-label="Fechar inscrição">×</button></div>
+    <h2 id="registration-title">Garanta seu lugar</h2>
+    <p id="registration-event" class="muted"></p>
+    <form id="registration-form">
+      <fieldset id="registration-fields">
+        <label for="participant-name">Nome do participante</label>
+        <input id="participant-name" name="participantName" autocomplete="name" type="text" placeholder="Nome completo" required>
+        <label for="participant-email">Email</label>
+        <input id="participant-email" name="email" autocomplete="email" type="email" placeholder="voce@exemplo.com" required>
+        <button id="register-button" class="button primary full-width" type="submit">Confirmar inscrição</button>
+      </fieldset>
+      <p id="registration-message" class="message" role="status" aria-live="polite" hidden></p>
+    </form>
+  </dialog>
+</body>
+</html>
