@@ -132,4 +132,4 @@ docs/TESTES_MANUAIS.md    Roteiro de verificação dos endpoints
 
 ## Verificação manual
 
-O [roteiro de testes manuais](docs/TESTES_MANUAIS.md) descreve os cenários de criação, inscrição, lotação e listagem para execução em um cliente HTTP, como Postman, Insomnia ou Thunder Client.
+O [roteiro de testes manuais](docs/TESTES_MANUAIS.md) registra os cenários de criação, inscrição, lotação e listagem. A [coleção Postman](postman/Event-Manager.postman_collection.json) permite reproduzir as requisições, e os [resultados da execução](docs/RESULTADOS_TESTES.md) documentam a aprovação de todos os cenários exigidos.
