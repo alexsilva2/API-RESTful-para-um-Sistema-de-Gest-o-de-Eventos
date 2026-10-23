@@ -1,0 +1,204 @@
+{
+  "info": {
+    "name": "Event Manager API - Testes de entrega",
+    "description": "Cenarios manuais exigidos na atividade pratica: validacao Joi, criacao de evento, controle de vagas e listagem com contagem de inscricoes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "eventId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1 - Rejeitar evento sem capacidade",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Evento sem capacidade\",\n  \"date\": \"2026-11-20T19:00:00-03:00\"\n}"
+        },
+        "url": "{{baseUrl}}/events"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Retorna 400 para evento sem capacidade', function () {",
+              "  pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Resposta informa erro no campo capacity', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.details.some((detail) => detail.field === 'capacity')).to.be.true;",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Criar evento com capacidade 2",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Workshop de Node.js\",\n  \"date\": \"2026-11-20T19:00:00-03:00\",\n  \"capacity\": 2\n}"
+        },
+        "url": "{{baseUrl}}/events"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Cria o evento com status 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('eventId', body.id);",
+              "pm.test('Evento possui ID e capacidade 2', function () {",
+              "  pm.expect(body.id).to.be.a('number');",
+              "  pm.expect(body.capacity).to.eql(2);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Inscrever primeiro participante",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"participantName\": \"Ana Silva\",\n  \"email\": \"ana@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/events/{{eventId}}/register"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Primeira inscricao retorna 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Inscrever segundo participante",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"participantName\": \"Bruno Lima\",\n  \"email\": \"bruno@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/events/{{eventId}}/register"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Segunda inscricao retorna 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Rejeitar terceiro participante",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"participantName\": \"Carla Souza\",\n  \"email\": \"carla@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/events/{{eventId}}/register"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Evento lotado retorna 403', function () {",
+              "  pm.response.to.have.status(403);",
+              "});",
+              "pm.test('Resposta informa que o evento esta lotado', function () {",
+              "  pm.expect(pm.response.json().message).to.include('lotado');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - Listar evento com duas inscricoes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/events"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Listagem retorna 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Evento criado possui duas inscricoes', function () {",
+              "  const events = pm.response.json();",
+              "  const eventId = Number(pm.collectionVariables.get('eventId'));",
+              "  const event = events.find((item) => item.id === eventId);",
+              "  pm.expect(event).to.exist;",
+              "  pm.expect(Number(event.registrationCount)).to.eql(2);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
