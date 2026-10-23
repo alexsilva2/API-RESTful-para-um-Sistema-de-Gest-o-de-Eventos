@@ -2,7 +2,7 @@
   "name": "event-manager-api",
   "version": "1.0.0",
   "private": true,
-  "description": "API RESTful de gestão de eventos — etapas 1 a 4 da atividade prática.",
+  "description": "API RESTful para gestão de eventos, inscrições de participantes e controle de vagas.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

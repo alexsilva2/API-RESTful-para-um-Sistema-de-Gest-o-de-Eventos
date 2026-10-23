@@ -1,24 +1,38 @@
-# Event Manager API
+# API RESTful para um Sistema de Gestão de Eventos
 
-API RESTful com Node.js, Express, Joi, Sequelize e SQLite para a atividade prática das aulas 11 e 12.
+API para cadastro de eventos e gerenciamento de inscrições, com validação dos dados, persistência em SQLite e controle de vagas por evento.
 
-## Divisão do trabalho: 80% / 20%
+## Funcionalidades
 
-O PDF contém cinco etapas. Esta entrega implementa **as etapas 1 a 4 (4/5 = 80% por etapas)**. Essa divisão não representa uma estimativa de horas ou da nota. A etapa 5, de testes manuais em um cliente HTTP, fica para o outro integrante.
+- Cadastro de eventos com título, data e capacidade máxima.
+- Listagem de eventos com a quantidade de inscrições realizadas.
+- Inscrição de participantes com nome e email.
+- Bloqueio de novas inscrições quando o evento atinge sua capacidade.
+- Validação de requisições e respostas de erro em JSON.
 
-| Etapa do PDF | Situação |
+## Tecnologias
+
+| Tecnologia | Finalidade |
 | --- | --- |
-| 1. Estrutura base, Express e Router | Implementada |
-| 2. Validação com Joi e respostas 400 | Implementada |
-| 3. SQLite, Sequelize, modelos e relacionamento 1:N | Implementada |
-| 4. Criação, listagem com contagem e inscrições com limite de vagas | Implementada |
-| 5. Testes manuais no Thunder Client, Postman ou Insomnia | Pendente: outro integrante |
+| Node.js | Execução do servidor |
+| Express | Rotas HTTP e middlewares |
+| Joi | Validação dos dados de entrada |
+| Sequelize | Mapeamento dos modelos e acesso ao banco |
+| SQLite | Persistência local dos dados |
 
-## Executar
+## Instalação e execução
 
-Requer Node.js 22 ou superior e npm.
+### Pré-requisitos
+
+- Node.js 22 ou superior.
+- npm.
+- Git para clonar o repositório.
+
+### Instalação
 
 ```sh
+git clone https://github.com/alexsilva2/API-RESTful-para-um-Sistema-de-Gest-o-de-Eventos.git
+cd API-RESTful-para-um-Sistema-de-Gest-o-de-Eventos
 npm ci
 npm start
 ```
@@ -31,11 +45,24 @@ Para reiniciar automaticamente ao editar o código:
 npm run dev
 ```
 
-Configurações opcionais por variáveis de ambiente: `PORT` (padrão `3000`) e `DB_STORAGE` (padrão `database.sqlite` na raiz). O projeto não carrega arquivos `.env` automaticamente.
+## Configuração
 
-## Rotas
+| Variável de ambiente | Padrão | Descrição |
+| --- | --- | --- |
+| `PORT` | `3000` | Porta HTTP do servidor |
+| `DB_STORAGE` | `database.sqlite` na raiz | Caminho do arquivo SQLite |
 
-Enviar os corpos de requisição como JSON com `Content-Type: application/json`.
+As variáveis devem ser definidas no ambiente antes de iniciar o servidor. O projeto não carrega arquivos `.env` automaticamente.
+
+## Endpoints
+
+URL base local: `http://localhost:3000`. Envie os corpos de requisição como JSON com `Content-Type: application/json`.
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| `POST` | `/events` | Criar um evento |
+| `GET` | `/events` | Listar eventos e suas contagens de inscrições |
+| `POST` | `/events/:id/register` | Inscrever um participante |
 
 ### `POST /events`
 
@@ -49,7 +76,13 @@ Cria um evento e retorna `201` com o registro persistido, incluindo seu `id`.
 }
 ```
 
-`title` é uma string obrigatória e não vazia; `date` é uma data ISO obrigatória; `capacity` é um inteiro positivo obrigatório. Dados inválidos retornam `400` com a lista `details` de campos e mensagens de validação.
+| Campo | Regra |
+| --- | --- |
+| `title` | String obrigatória e não vazia |
+| `date` | Data obrigatória em formato ISO 8601 |
+| `capacity` | Inteiro positivo obrigatório |
+
+Dados inválidos retornam `400` com a lista `details` de campos e mensagens de validação.
 
 ### `GET /events`
 
@@ -57,7 +90,7 @@ Retorna `200` com uma lista de eventos ordenados pelo ID. Cada evento inclui `re
 
 ### `POST /events/:id/register`
 
-Substituir `:id` pelo ID retornado na criação do evento.
+Substitua `:id` pelo ID retornado na criação do evento. O nome do participante e um email válido são obrigatórios.
 
 ```json
 {
@@ -73,7 +106,13 @@ Substituir `:id` pelo ID retornado na criação do evento.
 | `404` | Evento não encontrado |
 | `403` | Evento lotado |
 
-A consulta de vagas e a criação da inscrição usam uma única transação SQLite do tipo `IMMEDIATE`, evitando que inscrições simultâneas ultrapassem a capacidade. A atividade não exige exclusividade de email por evento.
+## Regras de negócio
+
+- Cada evento possui uma capacidade máxima e pode ter várias inscrições.
+- Cada inscrição pertence a um único evento.
+- A API verifica a existência do evento e a disponibilidade de vagas antes de salvar a inscrição.
+- A consulta de vagas e a criação da inscrição usam uma única transação SQLite do tipo `IMMEDIATE`, evitando que inscrições simultâneas ultrapassem a capacidade.
+- O email não é exclusivo por evento: requisições repetidas podem gerar novas inscrições enquanto houver vagas.
 
 ## Organização
 
@@ -86,9 +125,9 @@ models/Registration.js    Modelo de inscrição
 models/index.js           Relacionamento entre os modelos
 middleware/validation.js  Validações Joi
 routes/eventRoutes.js     Rotas e regras de negócio
-PENDENCIAS.md             Parte reservada ao outro integrante
+docs/TESTES_MANUAIS.md    Roteiro de verificação dos endpoints
 ```
 
-Repositório: https://github.com/alexsilva2/API-RESTful-para-um-Sistema-de-Gest-o-de-Eventos
+## Verificação manual
 
-Esta entrega está organizada em commits separados de configuração, banco de dados, validações, API e documentação. O outro integrante deve concluir a etapa 5, fazer seu próprio commit e enviá-lo ao mesmo repositório para a entrega final.
+O [roteiro de testes manuais](docs/TESTES_MANUAIS.md) descreve os cenários de criação, inscrição, lotação e listagem para execução em um cliente HTTP, como Postman, Insomnia ou Thunder Client.
